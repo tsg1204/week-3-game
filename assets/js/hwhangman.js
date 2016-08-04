@@ -10,6 +10,7 @@ var targetWord = '';
 var guesses = [];
 var maxLives = 6;
 var wins = 0;
+var gameOver = false;
 
 
 function newWord() {
@@ -45,22 +46,22 @@ function drawGuesses() {
     document.getElementById('previous-guesses').innerHTML = guesses.join(', ');
 }
 
-function cleanGuess() {
-    var uniqueGuesses = [];
-    for (var i = 0; i < guesses.Length; i++) {
-        if (guesses.length > 0 && quesses.inArray(guesses[i], uniqueGuesses) == -1) {
-            uniqueGuesses.push(guesses[i]);
-        }
-    }
-    guesses = uniqueGuesses;
-}
-
 function addGuess() {
     var temp = '';
-    // if (/[a-zA-Z]/.test(document.getElementById('previous-guesses')) && 
-    //     typeof document.getElementById('previous-guesses') !== "undefined") {
+
         temp =  String.fromCharCode(event.keyCode).toLowerCase();;
         guesses.push(temp);
+}
+
+function endGame(isWinner) {
+    if (isWinner) {
+        document.querySelector('#won').innerHTML = "You won! Congratulations! :)";
+    } else {
+       document.querySelector('#won').innerHTML = "You lost! Sorry! Try again! :(";
+    }
+    setTimeout(function () {
+        location.reload()
+    }, 3000);
 }
 
 function reviewLives() {
@@ -89,21 +90,22 @@ function reviewLives() {
         case 6: document.getElementById("hang-img").className = "alive";
     }
 
+    document.querySelector('#lives-left').innerHTML = "Number of guesses remaining: " + livesRemaining;
+
     if (livesRemaining <= 0) {
         //image  to alive
         document.getElementById("hang-img").className = "live6";
         document.getElementById('lost-sound').play();
-        resetGame();
+        endGame(false);
         return;
     }
-    document.querySelector('#lives-left').innerHTML = "Number of guesses remaining: " + livesRemaining;
 }
 
 function checkIfWon() {
     if (guessWord() == targetWord) {
         document.getElementById('win-sound').play();
         wins++;
-        resetGame();
+        endGame(true);
     }
 }
 
@@ -111,6 +113,7 @@ function resetGame() {
     //image to alive;
     document.getElementById("hang-img").className = "alive";
     document.querySelector('#wins').innerHTML = "Wins: " + wins;
+    document.querySelector('#won').innerHTML = "";
     targetWord = '';
     guesses = [];
     newWord();
@@ -118,14 +121,12 @@ function resetGame() {
 
 function update() {
     addGuess();
-   // cleanGuess();
     drawWord();
     drawGuesses();
     reviewLives();
     checkIfWon();
-    document.querySelector('#wins').innerHTML = "Wins: " + wins;
+    document.querySelector('#wins').innerHTML = "Wins: " + wins; 
 }
-
 
 document.onkeyup = function(event) {
     update();
@@ -133,7 +134,5 @@ document.onkeyup = function(event) {
 
 window.onload = function(event) {
     drawWord();
-   // drawGuesses();
-    //update();
 }
 

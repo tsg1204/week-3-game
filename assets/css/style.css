@@ -149,6 +149,9 @@ main {
 	position: absolute;
 	z-index: 1;
 }
+#won {
+	color: #ff3300;
+}
 /* Right container ******************/
 .aside-container {
 	background: #fff;
