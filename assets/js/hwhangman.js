@@ -1,3 +1,4 @@
+
 var wordlist = ["Albani", "Andorra", "Austria", "Belarus", "Belgium", "Bosnia and Herzegovina", "Bulgaria", "Croatia", 
                 "Czech Republic", "Denmark", "Estonia", "Faroe Islands", "Finland", "France", "Georgia", "Germany", 
                 "Gibraltar", "Greece", "Guernsey", "Hungary", "Iceland", "Ireland", "Isle of Man", "Italy", "Jersey", 
@@ -26,6 +27,7 @@ function guessWord() {
         }
     }
     return gWord;
+
 }
 
 function drawWord() {   
@@ -40,7 +42,7 @@ function drawWord() {
 
 function drawGuesses() {
     guesses.sort();
-    document.getElementById('previous-guesses').innerHTML = "Letters already guessed:" + guesses.join(', ');
+    document.getElementById('previous-guesses').innerHTML = guesses.join(', ');
 }
 
 function cleanGuess() {
@@ -54,11 +56,11 @@ function cleanGuess() {
 }
 
 function addGuess() {
-    if (/^[a-zA-Z]*$/.test(document.getElementById('previous-guesses')) && 
-        typeof document.getElementById('previous-guesses') !== "undefined") {
-        guesses.push(document.getElementById('previous-guesses').toLowerCase());
-    }
-
+    var temp = '';
+    // if (/[a-zA-Z]/.test(document.getElementById('previous-guesses')) && 
+    //     typeof document.getElementById('previous-guesses') !== "undefined") {
+        temp =  String.fromCharCode(event.keyCode).toLowerCase();;
+        guesses.push(temp);
 }
 
 function reviewLives() {
@@ -68,26 +70,46 @@ function reviewLives() {
     for (var i = 0; i < guesses.length; i++) {
         if (string.indexOf(guesses[i], 0) == -1) {
             livesRemaining--;
+
         }
+    }
+    switch(livesRemaining) {
+        case 0: document.getElementById("hang-img").className = "live6";
+                break;
+        case 1: document.getElementById("hang-img").className = "live5";
+                break;
+        case 2: document.getElementById("hang-img").className = "live4";
+                break;
+        case 3: document.getElementById("hang-img").className = "live3";
+                break;
+        case 4: document.getElementById("hang-img").className = "live2";
+                break;
+        case 5: document.getElementById("hang-img").className = "live1";
+                break;
+        case 6: document.getElementById("hang-img").className = "alive";
     }
 
     if (livesRemaining <= 0) {
-        //image  to alife
+        //image  to alive
+        document.getElementById("hang-img").className = "live6";
         document.getElementById('lost-sound').play();
         resetGame();
         return;
     }
+    document.querySelector('#lives-left').innerHTML = "Number of guesses remaining: " + livesRemaining;
 }
 
 function checkIfWon() {
     if (guessWord() == targetWord) {
-        document.getElementById('in-sound').play();
+        document.getElementById('win-sound').play();
         wins++;
+        resetGame();
     }
 }
 
 function resetGame() {
-    //image to alife;
+    //image to alive;
+    document.getElementById("hang-img").className = "alive";
     document.querySelector('#wins').innerHTML = "Wins: " + wins;
     targetWord = '';
     guesses = [];
@@ -96,7 +118,7 @@ function resetGame() {
 
 function update() {
     addGuess();
-    cleanGuess();
+   // cleanGuess();
     drawWord();
     drawGuesses();
     reviewLives();
@@ -104,8 +126,14 @@ function update() {
     document.querySelector('#wins').innerHTML = "Wins: " + wins;
 }
 
+
 document.onkeyup = function(event) {
-    drawWord();
-    drawGuesses();
     update();
-};
+}
+
+window.onload = function(event) {
+    drawWord();
+   // drawGuesses();
+    //update();
+}
+
